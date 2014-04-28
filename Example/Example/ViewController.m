@@ -22,7 +22,7 @@
 - (void)viewDidLoad
 {
   [super viewDidLoad];
-  CutomRefreshView *customRefreshView = [[CutomRefreshView alloc] initWithFrame:CGRectMake(0, 0, 320, 60)];
+//  CutomRefreshView *customRefreshView = [[CutomRefreshView alloc] initWithFrame:CGRectMake(0, 0, 320, 60)];
   
   RHRefreshControlConfiguration *refreshConfiguration = [[RHRefreshControlConfiguration alloc] init];
   refreshConfiguration.refreshView = RHRefreshViewStylePinterest;
@@ -30,14 +30,22 @@
   //  refreshConfiguration.maximumForPull = @120;
   self.refreshControl = [[RHRefreshControl alloc] initWithConfiguration:refreshConfiguration];
   self.refreshControl.delegate = self;
-  [self.refreshControl attachToScrollView:self.tableView];
   self.tableView.backgroundColor = [UIColor colorWithWhite:0.88 alpha:1.0];
   
-  if ([self respondsToSelector:@selector(automaticallyAdjustsScrollViewInsets)]) {
-    self.automaticallyAdjustsScrollViewInsets = NO;
-  }
+//  if ([self respondsToSelector:@selector(automaticallyAdjustsScrollViewInsets)]) {
+//    self.automaticallyAdjustsScrollViewInsets = NO;
+//  }
   
   [self.tableView registerClass:[UITableViewCell class] forCellReuseIdentifier:@"Cell"];
+    
+//    self.tableView.contentInset = UIEdgeInsetsMake(64, 0, 0, 0);
+}
+
+- (void)viewWillAppear:(BOOL)animated
+{
+    [super viewWillAppear:animated];
+    [self.refreshControl attachToScrollView:self.tableView];
+    
 }
 
 - (void)didReceiveMemoryWarning
@@ -48,7 +56,7 @@
 
 #pragma mark - TableView Datasource
 - (NSInteger)tableView:(UITableView *)tableView numberOfRowsInSection:(NSInteger)section {
-  return 5;
+  return 15;
 }
 
 - (NSInteger)numberOfSectionsInTableView:(UITableView *)tableView {
@@ -57,7 +65,7 @@
 
 - (UITableViewCell *) tableView:(UITableView *)tableView cellForRowAtIndexPath:(NSIndexPath *)indexPath {
   UITableViewCell *cell = [self.tableView dequeueReusableCellWithIdentifier:@"Cell"];
-  cell.textLabel.text = @"COSTA";
+  cell.textLabel.text = [NSString stringWithFormat:@"Row %ld", indexPath.row];
   return cell;
 }
 
@@ -66,6 +74,7 @@
 - (void)scrollViewDidScroll:(UIScrollView *)scrollView{
 	
 	[self.refreshControl refreshScrollViewDidScroll:scrollView];
+    NSLog(@"scrolled, offset %f", scrollView.contentOffset.y);
   
 }
 
@@ -77,7 +86,7 @@
 
 #pragma mark - RHRefreshControl Delegate
 - (void)refreshDidTriggerRefresh:(RHRefreshControl *)refreshControl {
-  self.loading = YES;
+    self.loading = YES;
 	
 	[self performSelector:@selector(_fakeLoadComplete) withObject:nil afterDelay:2.0];
 }

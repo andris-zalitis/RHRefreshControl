@@ -22,6 +22,7 @@ typedef NS_ENUM(NSInteger, RHRefreshState) {
 @interface RHRefreshControl : NSObject
 
 @property (nonatomic, weak) id<RHRefreshControlDelegate> delegate;
+@property (nonatomic, assign) UIEdgeInsets existingInsets;
 
 - (id)initWithConfiguration:(RHRefreshControlConfiguration *)configuration;
 - (void)attachToScrollView:(UIScrollView *)scrollView;
