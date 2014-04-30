@@ -25,6 +25,7 @@
 //  CutomRefreshView *customRefreshView = [[CutomRefreshView alloc] initWithFrame:CGRectMake(0, 0, 320, 60)];
   
   RHRefreshControlConfiguration *refreshConfiguration = [[RHRefreshControlConfiguration alloc] init];
+    refreshConfiguration.minimumForStart = @30;
   refreshConfiguration.refreshView = RHRefreshViewStylePinterest;
   //  refreshConfiguration.minimumForStart = @0;
   //  refreshConfiguration.maximumForPull = @120;
@@ -32,9 +33,9 @@
   self.refreshControl.delegate = self;
   self.tableView.backgroundColor = [UIColor colorWithWhite:0.88 alpha:1.0];
   
-//  if ([self respondsToSelector:@selector(automaticallyAdjustsScrollViewInsets)]) {
-//    self.automaticallyAdjustsScrollViewInsets = NO;
-//  }
+  if ([self respondsToSelector:@selector(automaticallyAdjustsScrollViewInsets)]) {
+    self.automaticallyAdjustsScrollViewInsets = NO;
+  }
   
   [self.tableView registerClass:[UITableViewCell class] forCellReuseIdentifier:@"Cell"];
     
@@ -74,7 +75,7 @@
 - (void)scrollViewDidScroll:(UIScrollView *)scrollView{
 	
 	[self.refreshControl refreshScrollViewDidScroll:scrollView];
-    NSLog(@"scrolled, offset %f", scrollView.contentOffset.y);
+//    NSLog(@"scrolled, offset %f", scrollView.contentOffset.y);
   
 }
 
@@ -88,7 +89,7 @@
 - (void)refreshDidTriggerRefresh:(RHRefreshControl *)refreshControl {
     self.loading = YES;
 	
-	[self performSelector:@selector(_fakeLoadComplete) withObject:nil afterDelay:2.0];
+	[self performSelector:@selector(_fakeLoadComplete) withObject:nil afterDelay:10.0];
 }
 
 - (BOOL)refreshDataSourceIsLoading:(RHRefreshControl *)refreshControl {

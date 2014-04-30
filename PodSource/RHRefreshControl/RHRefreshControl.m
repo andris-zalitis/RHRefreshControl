@@ -22,23 +22,21 @@
 
 @implementation RHRefreshControl
 
-
 - (id)initWithConfiguration:(RHRefreshControlConfiguration *)configuration {
     self = [super init];
     if (self) {
-        self.minimumForStart = [configuration.minimumForStart floatValue];
-        self.maximumForPull = [configuration.maximumForPull floatValue];
-        self.refreshView = configuration.refreshView;
+        _minimumForStart = [configuration.minimumForStart floatValue];
+        _maximumForPull = [configuration.maximumForPull floatValue];
+        _refreshView = configuration.refreshView;
     }
     
     return self;
 }
 
 - (void)attachToScrollView:(UIScrollView *)scrollView {
-    // might not get anything if initialized in viewDidLoad
-    _existingInsets = scrollView.contentInset;
     
-    self.refreshView.center = CGPointMake(CGRectGetMidX(scrollView.bounds), -1*(self.maximumForPull - self.minimumForStart - _existingInsets.top) / 2);
+    self.refreshView.center = CGPointMake(CGRectGetMidX(scrollView.bounds), -1*(self.minimumForStart) / 2);
+//    self.refreshView.backgroundColor = [UIColor redColor];
     [scrollView insertSubview:self.refreshView atIndex:0];
 }
 
@@ -48,10 +46,7 @@
 		
 		CGFloat offset = MAX(scrollView.contentOffset.y * -1, 0);
 		offset = MIN(offset, 60);
-		scrollView.contentInset = UIEdgeInsetsMake(offset + _existingInsets.top,
-                                                   _existingInsets.left,
-                                                   _existingInsets.bottom,
-                                                   _existingInsets.right);
+		scrollView.contentInset = UIEdgeInsetsMake(offset, 0.0f, 0.0f, 0.0f);
 		
 	} else if (scrollView.isDragging) {
 		
@@ -61,29 +56,38 @@
 		}
 		
 		if (self.state == RHRefreshStatePulling && scrollView.contentOffset.y > -(self.maximumForPull + self.minimumForStart) && scrollView.contentOffset.y < 0.0f && !_loading) {
+            NSLog(@"state is pulling and content offset is still bigger than the negative of maxforpull + minimumforstart, and offset is less than 0 and we are not loading data; so we set the state to normal");
 			[self setState:RHRefreshStateNormal];
 		} else if (self.state == RHRefreshStateNormal && scrollView.contentOffset.y < -(self.maximumForPull + self.minimumForStart) && !_loading) {
+            NSLog(@"the state is normal and our offset now is less than maxforpull+minforstart, and we are still not loading, set it to pulling state");
 			[self setState:RHRefreshStatePulling];
 		}
 		
-		if (scrollView.contentInset.top != _existingInsets.top) {
-			scrollView.contentInset = _existingInsets;
+		if (scrollView.contentInset.top != 0) {
+            NSLog(@"our contentinset for top was not zero, set insets to zero");
+			scrollView.contentInset = UIEdgeInsetsZero;
 		}
 		
 	}
 }
 
 - (void)updateRefreshViewWithScrollView:(UIScrollView *)scrollView {
-    if (scrollView.contentOffset.y + self.minimumForStart > 0) return;
+    NSLog(@"updateRefreshViewWithScrollView, contentOffset: %f", scrollView.contentOffset.y);
+    if (scrollView.contentOffset.y + self.minimumForStart > 0) {
+        // in case if user released dragging without triggering the loading, we still need to reset our progress for normal state to 0
+        [self.refreshView updateViewWithPercentage:0.f state:self.state];
+        return;
+    }
     
+    NSLog(@"content offset + minimumForStart is not bigger than zero, so let's continue");
     // float refreshView on middle of pull disctance...
     
-    CGFloat deltaOffsetY = MIN(fabsf(scrollView.contentOffset.y + self.minimumForStart), self.maximumForPull);
-    CGFloat percentage = deltaOffsetY / self.maximumForPull;
+    CGFloat deltaOffsetY = MIN(fabsf(scrollView.contentOffset.y + self.minimumForStart ), self.maximumForPull);
+    CGFloat percentage = deltaOffsetY/ self.maximumForPull;
     
-    CGRect refreshViewFrame = self.refreshView.frame;
-    refreshViewFrame.size.height = deltaOffsetY;
-    self.refreshView.frame = refreshViewFrame;
+//    CGRect refreshViewFrame = self.refreshView.frame;
+//    refreshViewFrame.size.height = deltaOffsetY;
+//    self.refreshView.frame = refreshViewFrame;
     self.refreshView.center = CGPointMake(CGRectGetMidX(scrollView.bounds), scrollView.contentOffset.y / 2);
     
     [self.refreshView updateViewWithPercentage:percentage state:self.state];
@@ -95,6 +99,7 @@
 		_loading = [_delegate refreshDataSourceIsLoading:self];
 	}
 	
+    // if we pulled past our pull limit for refresh, trhen trigger refresh
 	if (scrollView.contentOffset.y <= -(self.maximumForPull + self.minimumForStart) && !_loading) {
 		
 		if ([_delegate respondsToSelector:@selector(refreshDidTriggerRefresh:)]) {
@@ -105,11 +110,7 @@
 		[self setState:RHRefreshStateLoading];
 		[UIView beginAnimations:nil context:NULL];
 		[UIView setAnimationDuration:.2];
-        //		scrollView.contentInset = UIEdgeInsetsMake((self.maximumForPull + self.minimumForStart), 0.0f, 0.0f, 0.0f);
-        scrollView.contentInset = UIEdgeInsetsMake(self.maximumForPull + self.minimumForStart + _existingInsets.top,
-                                                   _existingInsets.left,
-                                                   _existingInsets.bottom,
-                                                   _existingInsets.right);
+		scrollView.contentInset = UIEdgeInsetsMake((self.maximumForPull + self.minimumForStart), 0.0f, 0.0f, 0.0f);
 		[UIView commitAnimations];
 		
 	}
@@ -118,8 +119,7 @@
 - (void)refreshScrollViewDataSourceDidFinishedLoading:(UIScrollView *)scrollView {
     [UIView beginAnimations:nil context:NULL];
 	[UIView setAnimationDuration:.3];
-    //	[scrollView setContentInset:UIEdgeInsetsMake(0.0f, 0.0f, 0.0f, 0.0f)];
-    [scrollView setContentInset:_existingInsets];
+	[scrollView setContentInset:UIEdgeInsetsMake(0.0f, 0.0f, 0.0f, 0.0f)];
 	[UIView commitAnimations];
 	
 	[self setState:RHRefreshStateNormal];
