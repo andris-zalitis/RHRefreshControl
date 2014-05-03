@@ -5,34 +5,34 @@
 	<key>IDESourceControlProjectFavoriteDictionaryKey</key>
 	<false/>
 	<key>IDESourceControlProjectIdentifier</key>
-	<string>271C8068-2711-48CB-ACC5-836D14E35765</string>
+	<string>B3E35604-D84A-47B5-A687-2D5C38E66FC5</string>
 	<key>IDESourceControlProjectName</key>
 	<string>Example</string>
 	<key>IDESourceControlProjectOriginsDictionary</key>
 	<dict>
-		<key>18EBC583-CF7F-4B38-ACFE-EE917AC6AD7E</key>
-		<string>https://github.com/rathahin/RHRefreshControl.git</string>
+		<key>5F0A0087-A92C-4B90-B08F-A3C691EC8EFF</key>
+		<string>ssh://github.com/andris-zalitis/RHRefreshControl.git</string>
 	</dict>
 	<key>IDESourceControlProjectPath</key>
 	<string>Example/Example.xcodeproj/project.xcworkspace</string>
 	<key>IDESourceControlProjectRelativeInstallPathDictionary</key>
 	<dict>
-		<key>18EBC583-CF7F-4B38-ACFE-EE917AC6AD7E</key>
+		<key>5F0A0087-A92C-4B90-B08F-A3C691EC8EFF</key>
 		<string>../../..</string>
 	</dict>
 	<key>IDESourceControlProjectURL</key>
-	<string>https://github.com/rathahin/RHRefreshControl.git</string>
+	<string>ssh://github.com/andris-zalitis/RHRefreshControl.git</string>
 	<key>IDESourceControlProjectVersion</key>
 	<integer>110</integer>
 	<key>IDESourceControlProjectWCCIdentifier</key>
-	<string>18EBC583-CF7F-4B38-ACFE-EE917AC6AD7E</string>
+	<string>5F0A0087-A92C-4B90-B08F-A3C691EC8EFF</string>
 	<key>IDESourceControlProjectWCConfigurations</key>
 	<array>
 		<dict>
 			<key>IDESourceControlRepositoryExtensionIdentifierKey</key>
 			<string>public.vcs.git</string>
 			<key>IDESourceControlWCCIdentifierKey</key>
-			<string>18EBC583-CF7F-4B38-ACFE-EE917AC6AD7E</string>
+			<string>5F0A0087-A92C-4B90-B08F-A3C691EC8EFF</string>
 			<key>IDESourceControlWCCName</key>
 			<string>RHRefreshControl</string>
 		</dict>

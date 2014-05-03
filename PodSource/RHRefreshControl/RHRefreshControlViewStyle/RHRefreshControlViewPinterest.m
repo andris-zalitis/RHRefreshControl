@@ -71,6 +71,7 @@
   self.activityView = view;
   
   self.backgroundColor = [UIColor colorWithWhite:0.88 alpha:1.0];
+//    self.backgroundColor = [UIColor redColor];
 }
 
 - (void)updateViewWithPercentage:(CGFloat)percentage state:(NSInteger)state {
@@ -82,16 +83,16 @@
   self.iconLayer.transform = CATransform3DMakeRotation((angelDegree) / 180.0 * M_PI, 0.0f, 0.0f, 1.0f);
   self.circleLayer.strokeEnd = percentage;
   if (state != RHRefreshStateLoading) {
-    self.iconLayer.opacity = percentage;
-    self.circleLayer.opacity = percentage;
+//    self.iconLayer.opacity = percentage;
+//    self.circleLayer.opacity = percentage;
   }
   [CATransaction commit];
 }
 
 - (void)updateViewOnNormalStatePreviousState:(NSInteger)state {
   if (state == RHRefreshStatePulling) {
-    self.iconLayer.opacity = 0;
-    self.circleLayer.opacity = 0;
+//    self.iconLayer.opacity = 0;
+//    self.circleLayer.opacity = 0;
   }
   
   [_activityView stopAnimating];
@@ -103,8 +104,8 @@
 
 - (void)updateViewOnLoadingStatePreviousState:(NSInteger)state {
   [self.activityView startAnimating];
-  self.iconLayer.opacity = 0;
-  self.circleLayer.opacity = 0;
+//  self.iconLayer.opacity = 0;
+//  self.circleLayer.opacity = 0;
   CATransform3D fromMatrix = CATransform3DMakeScale(0.0, 0.0, 0.0);
   CATransform3D toMatrix = CATransform3DMakeScale(1.0f, 1.0f, 1.0f);
   CAKeyframeAnimation *animation = [RHAnimator animationWithCATransform3DForKeyPath:@"transform"

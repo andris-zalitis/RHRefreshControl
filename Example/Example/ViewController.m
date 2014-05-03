@@ -32,14 +32,14 @@
   self.refreshControl = [[RHRefreshControl alloc] initWithConfiguration:refreshConfiguration];
   self.refreshControl.delegate = self;
   self.tableView.backgroundColor = [UIColor colorWithWhite:0.88 alpha:1.0];
-  
+    
   if ([self respondsToSelector:@selector(automaticallyAdjustsScrollViewInsets)]) {
     self.automaticallyAdjustsScrollViewInsets = NO;
   }
   
   [self.tableView registerClass:[UITableViewCell class] forCellReuseIdentifier:@"Cell"];
     
-//    self.tableView.contentInset = UIEdgeInsetsMake(64, 0, 0, 0);
+    self.tableView.contentInset = UIEdgeInsetsMake(64, 0, 0, 0);
 }
 
 - (void)viewWillAppear:(BOOL)animated
