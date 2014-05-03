@@ -108,10 +108,10 @@
         
 		
 		[self setState:RHRefreshStateLoading];
-		[UIView beginAnimations:nil context:NULL];
-		[UIView setAnimationDuration:.2];
-		scrollView.contentInset = UIEdgeInsetsMake((self.maximumForPull + self.minimumForStart), 0.0f, 0.0f, 0.0f);
-		[UIView commitAnimations];
+//		[UIView beginAnimations:nil context:NULL];
+//		[UIView setAnimationDuration:.2];
+//		scrollView.contentInset = UIEdgeInsetsMake((self.maximumForPull + self.minimumForStart), 0.0f, 0.0f, 0.0f);
+//		[UIView commitAnimations];
 		
 	}
 }
