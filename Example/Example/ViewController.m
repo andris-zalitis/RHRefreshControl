@@ -24,8 +24,8 @@
     [super viewDidLoad];
 
     RHRefreshControlConfiguration *refreshConfiguration = [[RHRefreshControlConfiguration alloc] init];
-    refreshConfiguration.minimumForStart = @40;
-    refreshConfiguration.maximumForPull = @120;
+    refreshConfiguration.minimumForStart = @44;
+    refreshConfiguration.maximumForPull = @80;
     refreshConfiguration.refreshView = RHRefreshViewStylePinterest;
     self.refreshControl = [[RHRefreshControl alloc] initWithConfiguration:refreshConfiguration];
     self.refreshControl.delegate = self;
