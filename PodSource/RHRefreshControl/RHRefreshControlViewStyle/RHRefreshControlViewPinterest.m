@@ -95,6 +95,9 @@
 //    self.circleLayer.opacity = 0;
   }
   
+    self.iconLayer.opacity = 1;
+    self.circleLayer.opacity = 1;
+    
   [_activityView stopAnimating];
 }
 
@@ -104,8 +107,8 @@
 
 - (void)updateViewOnLoadingStatePreviousState:(NSInteger)state {
   [self.activityView startAnimating];
-//  self.iconLayer.opacity = 0;
-//  self.circleLayer.opacity = 0;
+  self.iconLayer.opacity = 0;
+  self.circleLayer.opacity = 0;
   CATransform3D fromMatrix = CATransform3DMakeScale(0.0, 0.0, 0.0);
   CATransform3D toMatrix = CATransform3DMakeScale(1.0f, 1.0f, 1.0f);
   CAKeyframeAnimation *animation = [RHAnimator animationWithCATransform3DForKeyPath:@"transform"
@@ -115,6 +118,13 @@
   animation.duration = 1.0f;
   animation.removedOnCompletion = NO;
   [self.activityView.layer addAnimation:animation forKey:@"transform"];
+}
+
+- (void)updateViewOnHiddenStatePreviousState:(NSInteger)state
+{
+    self.iconLayer.opacity = 0;
+    self.circleLayer.opacity = 0;
+    [_activityView stopAnimating];
 }
 
 @end

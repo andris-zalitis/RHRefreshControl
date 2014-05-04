@@ -55,6 +55,10 @@
   
 }
 
+- (void)updateViewOnHiddenStatePreviousState:(NSInteger)state {
+    
+}
+
 - (void)updateViewWithPercentage:(CGFloat)percentage state:(NSInteger)state {
   NSUInteger absIndex = abs(([self.imagesForDrag count]-1)*percentage);
   self.animationView.image = self.imagesForDrag[absIndex];

@@ -29,11 +29,11 @@
   self.windows = [[UIWindow alloc] initWithFrame:[[UIScreen mainScreen] bounds]];
   self.viewController = [[ViewController alloc] initWithNibName:@"ViewController" bundle:nil];
   self.viewController.title = @"EXAMPLE";
-//  self.navigationController = [[UINavigationController alloc] initWithRootViewController:self.viewController];
-//  self.navigationController.navigationBar.barStyle = UIBarStyleBlack;
-//  self.navigationController.navigationBar.translucent = YES;
-//    self.navigationController.navigationBar.backgroundColor = [UIColor colorWithWhite:0.1 alpha:0.1];
-    self.windows.rootViewController = self.viewController; //self.navigationController;
+//    self.windows.rootViewController = self.viewController;
+  self.navigationController = [[UINavigationController alloc] initWithRootViewController:self.viewController];
+  self.navigationController.navigationBar.barStyle = UIBarStyleBlack;
+  self.navigationController.navigationBar.translucent = YES;
+  self.windows.rootViewController = self.navigationController;
   [self.windows makeKeyAndVisible];
 }
 
