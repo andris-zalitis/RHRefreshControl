@@ -27,7 +27,6 @@ static void * KVOContext = &KVOContext;
 {
     UIEdgeInsets _originalInsets;
     BOOL _ignoreInsetChanges;
-    BOOL _refreshEnded;
     
     __weak id<UIScrollViewDelegate> _realDelegate;
 }
@@ -45,7 +44,12 @@ static void * KVOContext = &KVOContext;
 
 - (void)attachToScrollView:(UIScrollView *)scrollView {
     _scrollView = scrollView;
-    [scrollView insertSubview:self.refreshView atIndex:0];
+    if ([scrollView isKindOfClass:[UITableView class]] && [(UITableView *)scrollView tableHeaderView]) {
+        //[scrollView insertSubview:self.refreshView atIndex:1];
+        [[(UITableView *)scrollView tableHeaderView] addSubview:self.refreshView];
+    } else {
+        [scrollView insertSubview:self.refreshView atIndex:0];
+    }
     
     _originalInsets = scrollView.contentInset;
     [self positionRefreshView];
@@ -113,32 +117,38 @@ static void * KVOContext = &KVOContext;
 }
 
 - (void)endRefreshing {
-    // if we're not dragging currently then proceed with ending the animation
-    if (_scrollView && !_scrollView.dragging) {
-        [self actuallyEndLoading];
+    if (_scrollView && self.state != RHRefreshStateHidden) {
+        
+        DLog(@"ActuallyEndLoading - Set scrollview insets to %f", _originalInsets.top);
+        
+        
+        // if user holded the scrollview for the whole time, we won't have the inset, so we reset it only if we do have it
+        if (_scrollView.contentInset.top != _originalInsets.top) {
+            [UIView animateWithDuration:0.2 animations:^{
+                [_scrollView setContentInset:_originalInsets];
+            }];
+        }
+        
+        // if the scrollview is still pulled down then pull it up again
+        if (_scrollView.contentOffset.y + _originalInsets.top < 0) {
+            // kill the current drag gesture because we're forcing it to scroll up (and don't want it to jitter back)
+            if (_scrollView.panGestureRecognizer.enabled) {
+                _scrollView.panGestureRecognizer.enabled = NO;
+                _scrollView.panGestureRecognizer.enabled = YES;
+            }
+            // scroll up
+            [_scrollView setContentOffset:CGPointMake(_scrollView.contentOffset.x, -_originalInsets.top) animated:YES];
+        }
+        if ([self.refreshView respondsToSelector:@selector(updateViewOnComplete)]) {
+            [self.refreshView updateViewOnComplete];
+        }
+        
+        [self setState:RHRefreshStateHidden];
     } else {
-        // just remember that loading has ended, we'll take that into account when scrollview is not dragging anymore
-        _refreshEnded = YES;
+        DLog(@"end loading called, but refresh control wasn't active");
     }
 }
 
-- (void)actuallyEndLoading
-{
-//    DLog(@"ActuallyEndLoading - Set scrollview insets to %f", _originalInsets.top);
-    
-    [UIView animateWithDuration:.3 animations:^{
-        [_scrollView setContentInset:_originalInsets];
-    }];
-	
-    if ([self.refreshView respondsToSelector:@selector(updateViewOnComplete)]) {
-        [self.refreshView updateViewOnComplete];
-    }
-    
-	[self setState:RHRefreshStateHidden];
-    
-    // let it end again next time
-    _refreshEnded = NO;
-}
 
 - (void)setState:(RHRefreshState)newState {
     
@@ -188,34 +198,7 @@ static void * KVOContext = &KVOContext;
     
     [self positionRefreshView];
     
-    // if we're scrolling while loading then
-    if (self.state == RHRefreshStateLoading) {
-        // only proceed if user released the scrollview
-        if (!_scrollView.dragging) {
-
-            // if we haven't yet set the contentInset for it, adjust the inset as needed
-//            if (_scrollView.contentInset.top == _originalInsets.top) {
-//                [UIView animateWithDuration:.1 animations:^{
-//                    _scrollView.contentInset = UIEdgeInsetsMake(self.minimumForStart + _originalInsets.top, 0.0f, 0.0f, 0.0f);
-//                }];
-            
-//                // take the dragged offset
-//                CGFloat offset = MAX((_scrollView.contentOffset.y + _originalInsets.top) * -1, 0);
-//                // compare the dragged offset to height of our refresh view, and use the smallest
-//                // this allows correctly adjusting scroll indicator - user can hide the refresh view
-//                offset = MIN(offset, self.minimumForStart);
-//
-////                DLog(@"Set scrollview inset to %f", offset + _originalInsets.top);
-//                _scrollView.contentInset = UIEdgeInsetsMake(offset + _originalInsets.top, 0.0f, 0.0f, 0.0f);
-//                _ignoreInsetChanges = YES;
-//                [UIView animateWithDuration:0.1 animations:^{
-//                    _scrollView.contentInset = UIEdgeInsetsMake(offset + _originalInsets.top, 0.0f, 0.0f, 0.0f);
-//                } completion:^(BOOL finished) {
-//                    _ignoreInsetChanges = NO;
-//                }];
-//            }
-        }
-    } else if (self.state != RHRefreshStateHidden) { // if it's hidden then user has released the scrollview and we're closing it, no point to update here
+    if (self.state != RHRefreshStateHidden) { // if it's hidden then user has released the scrollview and we're closing it, no point to update here
         // if we have pulled enough then start loading phase
         if (_scrollView.contentOffset.y + _originalInsets.top + self.minimumForStart <= -self.maximumForPull) {
             // the state at this point can only be Normal or Pulling
@@ -256,18 +239,13 @@ static void * KVOContext = &KVOContext;
     if (_realDelegate && [_realDelegate respondsToSelector:@selector(scrollViewDidEndDragging:willDecelerate:)]) {
         [_realDelegate scrollViewDidEndDragging:scrollView willDecelerate:decelerate];
     }
-    
+
     if (self.state == RHRefreshStateLoading) {
+        DLog(@"We ended dragging and it's loading state, so we add the inset");
         [UIView animateWithDuration:.1 animations:^{
             _scrollView.contentInset = UIEdgeInsetsMake(self.minimumForStart + _originalInsets.top, 0.0f, 0.0f, 0.0f);
         }];
     }
-    
-    // if data source told us that we should end, then now is the time to do it (because user is not dragging anymore)
-    if (_refreshEnded) {
-        [self actuallyEndLoading];
-    }
-    
 }
 
 - (BOOL)scrollViewShouldScrollToTop:(UIScrollView *)scrollView
