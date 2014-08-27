@@ -86,7 +86,6 @@ static void * KVOContext = &KVOContext;
     // if it's this class instance that's doing the observation
     if (context == KVOContext) {
         if ([keyPath isEqualToString:@"contentInset"]) {
-            DLog(@"scrolliew %@ inset changed:%@", object, change);
             // reposition the refresh view when view controller automatically sets insets for our scroll view
             if (! _ignoreInsetChanges) {
                 _originalInsets = [[change objectForKey:@"new"] UIEdgeInsetsValue];
@@ -102,7 +101,6 @@ static void * KVOContext = &KVOContext;
            
            if (self.state == RHRefreshStateLoading) {
                if (! _scrollView.dragging && ! _insetSet) {
-                   DLog(@"We ended dragging and it's loading state, so we add the inset");
                    _insetSet = YES;
                    
                    _ignoreInsetChanges = YES;
@@ -149,8 +147,6 @@ static void * KVOContext = &KVOContext;
         // set this first so that it's not loading and we wouldn't try to add inset in KVO method
         [self setState:RHRefreshStateHidden];
         
-        DLog(@"ActuallyEndLoading - Set scrollview insets to %f", _originalInsets.top);
-        
         
         // if user holded the scrollview for the whole time, we won't have the inset, so we reset it only if we do have it
         if (_scrollView.contentInset.top != _originalInsets.top) {
@@ -177,7 +173,7 @@ static void * KVOContext = &KVOContext;
         }
         
     } else {
-        DLog(@"end loading called, but refresh control wasn't active");
+//        DLog(@"end loading called, but refresh control wasn't active");
     }
 }
 
