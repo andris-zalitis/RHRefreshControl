@@ -109,6 +109,9 @@ NSString * const kRotationAnimation = @"keyRotationAnimation";
   self.animateLoading.opacity = 1.0;
 }
 
+- (void)updateViewOnHiddenStatePreviousState:(NSInteger)state {
+}
+
 - (void)updateViewOnComplete {
   self.pulling = NO;
   [self.animateLoading removeAnimationForKey:kRotationAnimation];

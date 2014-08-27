@@ -11,9 +11,10 @@
 #import "RHRefreshControlConfiguration.h"
 
 typedef NS_ENUM(NSInteger, RHRefreshState) {
-  RHRefreshStatePulling,
-  RHRefreshStateNormal,
-  RHRefreshStateLoading
+    RHRefreshStateHidden,
+    RHRefreshStateNormal,
+    RHRefreshStatePulling,
+    RHRefreshStateLoading,
 };
 
 @class RHRefreshControlConfiguration;
@@ -22,14 +23,14 @@ typedef NS_ENUM(NSInteger, RHRefreshState) {
 @interface RHRefreshControl : NSObject
 
 @property (nonatomic, weak) id<RHRefreshControlDelegate> delegate;
-@property (nonatomic, assign) UIEdgeInsets existingInsets;
+@property (nonatomic, assign, readonly) BOOL attached;
 
 - (id)initWithConfiguration:(RHRefreshControlConfiguration *)configuration;
 - (void)attachToScrollView:(UIScrollView *)scrollView;
 
-- (void)refreshScrollViewDidScroll:(UIScrollView *)scrollView;
-- (void)refreshScrollViewDidEndDragging:(UIScrollView *)scrollView;
-- (void)refreshScrollViewDataSourceDidFinishedLoading:(UIScrollView *)scrollView;
+- (void)endRefreshing;
+
+- (void)beginRefreshing;
 
 @end
 
@@ -37,6 +38,5 @@ typedef NS_ENUM(NSInteger, RHRefreshState) {
 @protocol RHRefreshControlDelegate <NSObject>
 
 - (void)refreshDidTriggerRefresh:(RHRefreshControl *)refreshControl;
-- (BOOL)refreshDataSourceIsLoading:(RHRefreshControl *)refreshControl;
 
 @end

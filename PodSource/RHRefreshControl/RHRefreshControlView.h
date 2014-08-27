@@ -16,6 +16,7 @@
 - (void)updateViewOnNormalStatePreviousState:(NSInteger)state;
 - (void)updateViewOnLoadingStatePreviousState:(NSInteger)state;
 - (void)updateViewOnPullingStatePreviousState:(NSInteger)state;
+- (void)updateViewOnHiddenStatePreviousState:(NSInteger)state;
 
 @optional
 - (void)updateViewOnComplete;

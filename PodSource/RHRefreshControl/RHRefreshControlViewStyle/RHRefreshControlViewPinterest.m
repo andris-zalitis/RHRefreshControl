@@ -71,6 +71,7 @@
   self.activityView = view;
   
   self.backgroundColor = [UIColor colorWithWhite:0.88 alpha:1.0];
+//    self.backgroundColor = [UIColor redColor];
 }
 
 - (void)updateViewWithPercentage:(CGFloat)percentage state:(NSInteger)state {
@@ -82,18 +83,21 @@
   self.iconLayer.transform = CATransform3DMakeRotation((angelDegree) / 180.0 * M_PI, 0.0f, 0.0f, 1.0f);
   self.circleLayer.strokeEnd = percentage;
   if (state != RHRefreshStateLoading) {
-    self.iconLayer.opacity = percentage;
-    self.circleLayer.opacity = percentage;
+//    self.iconLayer.opacity = percentage;
+//    self.circleLayer.opacity = percentage;
   }
   [CATransaction commit];
 }
 
 - (void)updateViewOnNormalStatePreviousState:(NSInteger)state {
   if (state == RHRefreshStatePulling) {
-    self.iconLayer.opacity = 0;
-    self.circleLayer.opacity = 0;
+//    self.iconLayer.opacity = 0;
+//    self.circleLayer.opacity = 0;
   }
   
+    self.iconLayer.opacity = 1;
+    self.circleLayer.opacity = 1;
+    
   [_activityView stopAnimating];
 }
 
@@ -114,6 +118,13 @@
   animation.duration = 1.0f;
   animation.removedOnCompletion = NO;
   [self.activityView.layer addAnimation:animation forKey:@"transform"];
+}
+
+- (void)updateViewOnHiddenStatePreviousState:(NSInteger)state
+{
+    self.iconLayer.opacity = 0;
+    self.circleLayer.opacity = 0;
+    [_activityView stopAnimating];
 }
 
 @end

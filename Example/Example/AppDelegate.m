@@ -29,6 +29,7 @@
   self.windows = [[UIWindow alloc] initWithFrame:[[UIScreen mainScreen] bounds]];
   self.viewController = [[ViewController alloc] initWithNibName:@"ViewController" bundle:nil];
   self.viewController.title = @"EXAMPLE";
+//    self.windows.rootViewController = self.viewController;
   self.navigationController = [[UINavigationController alloc] initWithRootViewController:self.viewController];
   self.navigationController.navigationBar.barStyle = UIBarStyleBlack;
   self.navigationController.navigationBar.translucent = YES;
